@@ -1,16 +1,19 @@
-import sys
+import platform
 from ctypes import *
 
 def get_encrypt_value(data):
-    if sys.platform == "darwin":
-            #这个里面根据mac电脑来换，通常一个可以另一个不可以。
-            cur = cdll.LoadLibrary("./bestV8_mac_m.dylib")
-    elif sys.platform == "linux":
+    system = platform.system()
+    cpu = platform.architecture()[0]
+    if syetem == "Darwin" and cpu == "64bit":
+        cur = cdll.LoadLibrary("./bestV8_mac_intel.dylib")
+    elif syetem == "Darwin" and cpu == "arm64":
+        cur = cdll.LoadLibrary("./bestV8_mac_m.dylib")
+    elif system == "Linux":
         cur = cdll.LoadLibrary("./bestV8_x64.so")
-    elif sys.platform == "win32":
+    elif system == "Windows":
         cur = cdll.LoadLibrary("./bestV8_win64.dll")
     else:
-        raise Exception("unknown systerm!")
+        raise Exception("unknown system or cpu!")
 
     result = bytes(20000)
     cur.runJs.argtypes = (c_char_p, c_char_p)
